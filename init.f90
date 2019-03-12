@@ -5,20 +5,37 @@ Module initialisation
   use allocation
 
 contains
-  subroutine MAT_A()
+  subroutine Calc_A()
     Integer:: j
-    Do j=1,Ng-1
-       MAT_A(j,j)=2/H(j)
-       MAT(j,j+1)=-1/H(j+1)
-       MAT(j+1,j)=-1/H(j)
+    Do j=2,Ng-1
+       MAT_A(j,j)=one/H(j)+one/H(j-1)
+       MAT_A(j,j+1)=-one/H(j)
+       MAT_A(j,j-1)=-one/H(j-1)
     End Do
-    MAT_A(Ng)=2/H(Ng)
-  END subroutine MAT_A
-  Subroutine Vec_Uex()
-    Integer :: j
-    
-    Do j=1,N
-       Vec_Uex(j)=0.5*(j+0.5)*H(j)(1-(j+0.5)*(H(j)))
+    MAT_A(Ng,Ng)=one/H(Ng)+one/H(Ng-1)
+    MAt_A(Ng,Ng-1)=-one/H(Ng-1)
+    MAT_A(1,2)=-one/H(2)
+    MAT_A(1,1)=one/H(1)+one/H(2)
+  END subroutine CALC_A
+
+  
+  Subroutine Calc_Uex()
+    Integer :: j    
+    Do j=0,Ng-1
+       VEC_Uex=j*H(j)*(1-j*H(j))
     end Do
-  end Subroutine Vec_Uex
+  end Subroutine Calc_Uex
+
+  Subroutine Calc_B()
+    integer ::j
+    REAL(PR)::pas
+    pas=one/Ng
+    H(1)=pas/2
+    H(Ng)=pas/2
+    Do j=1,Ng
+       H(j)=pas
+    End Do
+    MAT_B=H
+  End Subroutine Calc_B
+  
 end Module initialisation
